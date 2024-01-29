@@ -1,0 +1,97 @@
+import java.util.*;
+
+class Car {
+    private String regNumber;
+    private String color;
+
+    public Car(String regNumber, String color) {
+        this.regNumber = regNumber;
+        this.color = color;
+    }
+
+    public String getRegNumber() {
+        return regNumber;
+    }
+
+    public String getColor() {
+        return color;
+    }
+}
+
+class ParkingLot {
+    private int capacity;
+    private Car[] slots;
+
+    public ParkingLot(int capacity) {
+        this.capacity = capacity;
+        this.slots = new Car[capacity];
+    }
+
+    public int park(Car car) {
+        for (int i = 0; i < capacity; i++) {
+            if (slots[i] == null) {
+                slots[i] = car;
+                return i + 1; // Slot numbers are 1-indexed
+            }
+        }
+        return -1; // Parking lot full
+    }
+
+    public boolean leave(int slotNumber) {
+        if (slotNumber >= 1 && slotNumber <= capacity) {
+            slots[slotNumber - 1] = null;
+            return true;
+        }
+        return false; // Invalid slot number
+    }
+
+    public List<String> getRegistrationNumbersForCarsWithColor(String color) {
+        List<String> regNumbers = new ArrayList<>();
+        for (Car car : slots) {
+            if (car != null && car.getColor().equals(color)) {
+                regNumbers.add(car.getRegNumber());
+            }
+        }
+        return regNumbers;
+    }
+
+    public int getSlotNumberForRegistrationNumber(String regNumber) {
+        for (int i = 0; i < capacity; i++) {
+            if (slots[i] != null && slots[i].getRegNumber().equals(regNumber)) {
+                return i + 1;
+            }
+        }
+        return -1; // Car not found
+    }
+
+    public List<Integer> getSlotNumbersForCarsWithColor(String color) {
+        List<Integer> slotNumbers = new ArrayList<>();
+        for (int i = 0; i < capacity; i++) {
+            if (slots[i] != null && slots[i].getColor().equals(color)) {
+                slotNumbers.add(i + 1);
+            }
+        }
+        return slotNumbers;
+    }
+
+    public String status() {
+        StringBuilder statusInfo = new StringBuilder("Slot No. Registration No Colour\n");
+        for (int i = 0; i < capacity; i++) {
+            if (slots[i] != null) {
+                statusInfo.append(i + 1).append(" ").append(slots[i].getRegNumber()).append(" ").append(slots[i].getColor()).append("\n");
+            }
+        }
+        return statusInfo.toString().trim();
+    }
+}
+
+public class ParkingLotSystem {
+    public static void main(String[] args) {
+        // Usage example:
+        ParkingLot parkingLot = new ParkingLot(6);
+        parkingLot.park(new Car("KA-01-HH-1234", "White"));
+        parkingLot.park(new Car("KA-01-HH-9999", "White"));
+        parkingLot.leave(2);
+        parkingLot.status();
+    }
+}

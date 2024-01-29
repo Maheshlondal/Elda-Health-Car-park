@@ -1,0 +1,78 @@
+import org.junit.jupiter.api.Test;
+import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
+
+class ParkingLotTest {
+
+    @Test
+    void testPark() {
+        ParkingLot parkingLot = new ParkingLot(2);
+        Car car1 = new Car("KA-01-HH-1234", "White");
+        Car car2 = new Car("KA-01-HH-9999", "White");
+        assertEquals(1, parkingLot.park(car1));
+        assertEquals(2, parkingLot.park(car2));
+        assertEquals(-1, parkingLot.park(new Car("KA-01-BB-0001", "Black"))); // Parking lot full
+    }
+
+    @Test
+    void testLeave() {
+        ParkingLot parkingLot = new ParkingLot(2);
+        Car car1 = new Car("KA-01-HH-1234", "White");
+        Car car2 = new Car("KA-01-HH-9999", "White");
+        parkingLot.park(car1);
+        assertTrue(parkingLot.leave(1));
+        assertFalse(parkingLot.leave(3)); // Invalid slot number
+    }
+
+    @Test
+    void testGetRegistrationNumbersForCarsWithColor() {
+        ParkingLot parkingLot = new ParkingLot(3);
+        Car car1 = new Car("KA-01-HH-1234", "White");
+        Car car2 = new Car("KA-01-HH-9999", "White");
+        Car car3 = new Car("KA-01-BB-0001", "Black");
+        parkingLot.park(car1);
+        parkingLot.park(car2);
+        parkingLot.park(car3);
+        List<String> whiteCars = parkingLot.getRegistrationNumbersForCarsWithColor("White");
+        assertEquals(2, whiteCars.size());
+        assertTrue(whiteCars.contains("KA-01-HH-1234"));
+        assertTrue(whiteCars.contains("KA-01-HH-9999"));
+    }
+
+    @Test
+    void testGetSlotNumberForRegistrationNumber() {
+        ParkingLot parkingLot = new ParkingLot(2);
+        Car car1 = new Car("KA-01-HH-1234", "White");
+        Car car2 = new Car("KA-01-HH-9999", "White");
+        parkingLot.park(car1);
+        parkingLot.park(car2);
+        assertEquals(1, parkingLot.getSlotNumberForRegistrationNumber("KA-01-HH-1234"));
+        assertEquals(-1, parkingLot.getSlotNumberForRegistrationNumber("KA-01-HH-0000")); // Car not found
+    }
+
+    @Test
+    void testGetSlotNumbersForCarsWithColor() {
+        ParkingLot parkingLot = new ParkingLot(3);
+        Car car1 = new Car("KA-01-HH-1234", "White");
+        Car car2 = new Car("KA-01-HH-9999", "White");
+        Car car3 = new Car("KA-01-BB-0001", "Black");
+        parkingLot.park(car1);
+        parkingLot.park(car2);
+        parkingLot.park(car3);
+        List<Integer> whiteSlotNumbers = parkingLot.getSlotNumbersForCarsWithColor("White");
+        assertEquals(2, whiteSlotNumbers.size());
+        assertTrue(whiteSlotNumbers.contains(1));
+        assertTrue(whiteSlotNumbers.contains(2));
+    }
+
+    @Test
+    void testStatus() {
+        ParkingLot parkingLot = new ParkingLot(2);
+        Car car1 = new Car("KA-01-HH-1234", "White");
+        Car car2 = new Car("KA-01-HH-9999", "White");
+        parkingLot.park(car1);
+        parkingLot.park(car2);
+        String expectedStatus = "Slot No. Registration No Colour\n1 KA-01-HH-1234 White\n2 KA-01-HH-9999 White";
+        assertEquals(expectedStatus, parkingLot.status());
+    }
+}
